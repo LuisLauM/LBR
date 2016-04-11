@@ -1,0 +1,8 @@
+Package: LBR
+Type: Package
+Title: Herramientas para el análisis de datos de Biología Reproductiva
+Version: 0.1.0
+Authors@R: c(person("Wencheng", "Lau-Medrano", email = "llau@imarpe.gob.pe", role = c("cre", "aut")), person("Angel", "Perea", role = "aut"))
+Description: Automatización de rutinass gráficas y de análisis de datos de Biología reproductiva.
+License: GPL-2
+LazyData: TRUE

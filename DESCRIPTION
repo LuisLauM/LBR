@@ -1,8 +1,15 @@
 Package: LBR
+Version: 1.0.0
 Type: Package
 Title: Herramientas para el análisis de datos de Biología Reproductiva
-Version: 0.1.0
-Authors@R: c(person("Wencheng", "Lau-Medrano", email = "llau@imarpe.gob.pe", role = c("cre", "aut")), person("Angel", "Perea", role = "aut"))
-Description: Automatización de rutinass gráficas y de análisis de datos de Biología reproductiva.
+Authors@R: c(person("Wencheng", "Lau-Medrano", email = "llau@imarpe.gob.pe", role = c("cre", "aut")), person("Angel", "Perea", email = "aperea@imarpe.gob.pe", role = "aut"))
+Author: Wencheng Lau-Medrano [aut, cre], Angel Perea [aut]
+Imports:
+    lubridate,
+    zoo
+Description: Automatización de rutinass gráficas y de análisis de datos del
+    Laboratorio de Biología Reproductiva.
 License: GPL-2
 LazyData: TRUE
+URL: https://github.com/LuisLauM/LBR
+RoxygenNote: 5.0.1

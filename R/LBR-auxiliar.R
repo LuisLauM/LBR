@@ -7,7 +7,7 @@
   finDates <- max(as.Date(dates), na.rm = TRUE)
 
   newIni <- newFin <- NULL
-  for(i in seq(as.numeric(readline("Â¿CuÃ¡ntas secciones desea tomar?: "))))
+  for(i in seq(as.numeric(readline("¿Cuántas secciones desea tomar?: "))))
   {
     while(is.null(newIni) | is.null(newFin) |
           if(!is.null(newIni) & !is.null(newFin))
@@ -32,14 +32,19 @@
 # Get IGS index
 .getIndex_IGS <- function(data, ...){
 
-  igsIndex <- with(data, wgonad/wevisc*100)
+  igsIndex <- data.frame(time = data$date,
+                         igs = with(data, wgonad/wevisc*100),
+                         stringsAsFactors = FALSE)
 
   return(igsIndex)
 }
 
 # Get FC index
 .getIndex_FC <- function(data, ....){
-  fcIndex <- with(data, wevisc/length^3)
+
+  fcIndex <- data.frame(time = data$date,
+                        igs = with(data, wevisc/length^3),
+                        stringsAsFactors = FALSE)
 
   return(fcIndex)
 }

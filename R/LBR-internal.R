@@ -91,13 +91,7 @@
 .getIndices <- function(data, what, ...){
   indexFUN <- match.fun(paste0(".getIndex_", toupper(what)))
 
-  allData <- numeric(length(unique(data$yearmon)))
-  for(i in seq_along(unique(data$yearmon))){
-    tempData <- data[data$yearmon == unique(data$yearmon)[i],]
-    allData[i] <- indexFUN(data = tempData, ...)
-  }
+  allData <- indexFUN(data = data, ...)
 
-
-
-  return(output)
+  return(allData)
 }

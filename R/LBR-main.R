@@ -76,12 +76,15 @@ obtenerIndices <- function(data, sp = "anc", ...){
   for(i in seq_along(indexNames)){
     # Filtro de variables necesarias según índice
     tempData <- .checkVars(allData[[1]], what = indexNames[i])
-    tempData$yearmon <- as.yearmon(tempData$date)
+    tempData$yearmon <- zoo::as.yearmon(tempData$date)
 
     # Filtro de variables necesarias según índice
-    allIndex[i] <- .getIndices(tempData, what = indexNames[i], ...)
+    allIndex[[i]] <- .getIndices(tempData, what = indexNames[i], ...)
+    allIndex[[i]] <- allIndex[[i]][order(allIndex[[i]]$time),]
   }
   names(allIndex) <- indexNames
+
+  allData$indices <- allIndex
 
 
   class(allData) <- "LBRindices"

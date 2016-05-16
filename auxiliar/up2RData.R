@@ -4,4 +4,8 @@ save(.varsNames, file = "data/varsnames.RData")
 
 # Variables necesarias para cada índice
 .indexDepends <- read.csv(file = "auxiliar/index_depends.csv", stringsAsFactors = FALSE)
-save(.indexDepends, file = "data/inde_depends.RData")
+save(.indexDepends, file = "data/index_depends.RData")
+
+# Parámetros por especie
+species <- read.csv(file = "auxiliar/species.csv", stringsAsFactors = FALSE)
+save(species, file = "data/species.RData")

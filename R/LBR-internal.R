@@ -49,8 +49,6 @@
 # Función que verifica la presencia de las variables requeridas para el cálculo de índices
 .checkVars <- function(data, what){
 
-  what <- if(what == "all") c("igs", "fc")
-
   for(i in what){
 
     tempDepends <- .indexDepends$depends[.indexDepends$index == i]
@@ -69,13 +67,13 @@
       stop(myMessage)
     }
 
-    # Filtrado de filas válidas para variables requeridas por el índice
+    # Filtrado de filas v�lidas para variables requeridas por el �ndice
     index <- complete.cases(data[,c("wgonad", "wevisc")])
     if(sum(index, na.rm = TRUE) < 1){
       index <- match(tempDepends, .varsNames$varAbb)
       tempDepends <- paste0(.varsNames$varName[index], " (", .varsNames$varAbb[index], ")")
 
-      myMessage <- paste0("No existe ninguna fila válida con información de ",
+      myMessage <- paste0("No existe ninguna fila v�lida con informaci�n de ",
                           paste(tempDepends, collapse = ", "),  ".")
 
       stop(myMessage)
@@ -87,11 +85,11 @@
   return(data)
 }
 
-# Función de obtención de índices
-.getIndices <- function(data, what, ...){
+# Funci�n de obtenci�n de �ndices
+.getIndices <- function(data, what, sp, ...){
   indexFUN <- match.fun(paste0(".getIndex_", toupper(what)))
 
-  allData <- indexFUN(data = data, ...)
+  allData <- indexFUN(data = data, sp, ...)
 
   return(allData)
 }

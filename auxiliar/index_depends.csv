@@ -1,3 +1,4 @@
 index,depends
 igs,"wgonad, wevisc"
-fc,"wevisc, length"
+fc,"wtotal, wgonad, length"
+ar,mad

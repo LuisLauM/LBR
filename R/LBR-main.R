@@ -11,11 +11,11 @@
 #' @examples
 #'
 
-#' @title Lee las bases de datos de biologÃ­a reproductiva
-#' @description Funcion para leer bases de datos de biologÃ­a reproductiva desde un directorio
+#' @title Lee las bases de datos de biología reproductiva
+#' @description Funcion para leer bases de datos de biología reproductiva desde un directorio
 #' especificado.
 #' @param filename Archivo conteniendo la base de datos a trabajar.
-#' @param ... Argumentos extra, exportados a la funciÃ³n \code{read.csv}.
+#' @param ... Argumentos extra, exportados a la función \code{read.csv}.
 #' @examples
 #' leerLBRDatos(filename)
 
@@ -27,17 +27,19 @@ leerLBRDatos <- function(filename, useAll = TRUE,
   allData <- read.csv(file = filename, stringsAsFactors = stringsAsFactors)
   colnames(allData) <- tolower(colnames(allData))
 
-  # Mensaje si no existen las columnas de aÃ±o, mes, dÃ­a y especie
+  # Mensaje si no existen las columnas de año, mes, día y especie
   if(!all(is.element(c("year", "month", "day", "sp"), colnames(allData))))
-    stop("Es necesario que la base de datos contenga columnas de aÃ±o (year), mes (month),
-         dÃ­a (day) y especie (sp).")
+    stop("Es necesario que la base de datos contenga columnas de añoo (year), mes (month),
+         día (day) y especie (sp).")
 
-  # Filtrado de filas vÃ¡lidas para informaciÃ³n de aÃ±o, mes, dÃ­a, especie
+  # Filtrado de filas válidas para información de año, mes, día, especie
   index <- complete.cases(allData[,c("year", "month", "day", "sp")])
-  if(sum(index, na.rm = TRUE) < 1)
-    stop("No existe ninguna fila vÃ¡lida con informaciÃ³n aÃ±o (year), mes (month), dÃ­a (day)
-         y especie (sp).") else
-      allData <- allData[which(index),]
+  if(sum(index, na.rm = TRUE) < 1){
+    stop("No existe ninguna fila válida con información año (year), mes (month), día (day)
+         y especie (sp).")
+  }else{
+    allData <- allData[which(index),]
+  }
 
   allData$date <- as.Date(paste(allData$year, allData$month, allData$day, sep = "-"))
 
@@ -53,16 +55,17 @@ leerLBRDatos <- function(filename, useAll = TRUE,
   return(allData)
 }
 
-#' @title Obtiene un objeto con los principales Ã­ndices reproductivos: IGS, FC, FD
-#' @description Funcion para obtener un objeto de clase LBRindex con los principales Ã­ndices para
-#' una especie indicada: Ãndice GonadosomÃ¡tico, Factor de CondiciÃ³n, FracciÃ³n Desovante
-#' @param data Objeto de clase 'LBRData' conteniendo informaciÃ³n para el cÃ¡lculo de
-#' IGS (peso gÃ³nada, peso eviscerado), FC (pero eviscerado, longitud total)
-#' @param ... Argumentos extra, exportados a la funciÃ³n \code{read.csv}.
+#' @title Obtiene un objeto con los principales índices reproductivos: IGS, FC, FD
+#' @description Función para obtener un objeto de clase LBRindex con los principales índices para
+#' una especie indicada: índice Gonadosomático, Factor de Condición, Fracción Desovante
+#' @param data Objeto de clase 'LBRData' conteniendo información para el cálculo de
+#' IGS (peso gónada, peso eviscerado), FC (pero eviscerado, longitud total)
+#' @param ... Argumentos extra, exportados a la función \code{read.csv}.
 #' @examples
-#' obtenerIndices(filename)
+#' myData <- leerLBRDatos(filename)
+#' obtenerIndices(myData)
 
-obtenerIndices <- function(data, sp = "anc", ...){
+obtenerIndices <- function(data, sp = "anc", useIGS = TRUE, ...){
 
   # Filtro de datos por especie
   index <- is.element(data$sp, sp)
@@ -71,16 +74,30 @@ obtenerIndices <- function(data, sp = "anc", ...){
   # Create outpput file
   allData <- list(data = data, indices = NULL, sp = sp)
 
-  indexNames <- c("igs", "fc")
+  indexNames <- c("igs", "fc", "ar")
   allIndex <- list()
   for(i in seq_along(indexNames)){
-    # Filtro de variables necesarias segÃºn Ã­ndice
+
+    # Filtro de variables necesarias según índice
     tempData <- .checkVars(allData[[1]], what = indexNames[i])
     tempData$yearmon <- zoo::as.yearmon(tempData$date)
 
-    # Filtro de variables necesarias segÃºn Ã­ndice
-    allIndex[[i]] <- .getIndices(tempData, what = indexNames[i], ...)
-    allIndex[[i]] <- allIndex[[i]][order(allIndex[[i]]$time),]
+    # Efectuar filtros de Solo adultos, Solo hembras, a partir de una talla de maduración
+    index <- (tempData$sex == 0 & tempData$mad != species$virginal &
+                tempData$length >= species$talla_maduracion)
+    tempData <- tempData[index,]
+
+    # Filtro de variables necesarias según índice
+    tempIndex <- .getIndices(tempData, what = indexNames[i], sp, ...)
+
+    if(indexNames[i] == "igs" && isTRUE(useIGS)){
+      tempIndex <- with(tempData, data.frame(time = date, igs = igs))
+    }
+
+    if(is.data.frame(tempIndex) && is.element("time", colnames(tempIndex)))
+      tempIndex <- tempIndex[order(tempIndex$time),]
+
+    allIndex[[i]] <- tempIndex
   }
   names(allIndex) <- indexNames
 
